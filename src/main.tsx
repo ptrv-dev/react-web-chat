@@ -7,6 +7,7 @@ import { HomePage, LoginPage, RegistrationPage } from './pages';
 import RootLayout from './layouts/RootLayout';
 import { store } from './store';
 import './index.css';
+import { Toaster } from './components/ui/toaster';
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
       <RouterProvider router={router} />
+      <Toaster />
     </ThemeProvider>
   </Provider>
 );
