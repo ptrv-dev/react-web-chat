@@ -9,7 +9,7 @@ const HomePage: React.FC = () => {
   const [message, setMessage] = useState('');
   return (
     <div className="h-full flex flex-col">
-      <div className="p-4 flex flex-col gap-4 items-start h-full overflow-y-auto">
+      <div className="p-4 flex flex-col gap-4 items-start h-full overflow-y-auto custom-scroll">
         <Message username="user" message="Hello world!" time={new Date()} />
         <Message username="user" message="Hello world!" time={new Date()} />
         <Message username="user" message="Hello world!" time={new Date()} />
