@@ -10,7 +10,7 @@ const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="container">
-        <div className="max-w-md w-full px-4 md:px-8 py-16 rounded-lg bg-gray-900">
+        <div className="mx-auto max-w-md w-full px-4 md:px-8 py-16 rounded-lg bg-gray-900">
           <h1 className="text-4xl text-center mb-8">Create Account</h1>
           <div className="mb-4">
             <Label className="mb-2" htmlFor="username">
