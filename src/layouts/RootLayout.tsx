@@ -7,7 +7,7 @@ const RootLayout: React.FC = () => {
   return (
     <div className="flex items-stretch h-screen">
       <Navbar />
-      <div className="p-4 h-full overflow-y-auto">
+      <div className="h-full w-full">
         <Outlet />
       </div>
     </div>
