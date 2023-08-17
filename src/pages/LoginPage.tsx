@@ -1,72 +1,114 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { AlertCircle, ChevronRight } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { signIn } from '@/api/auth';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useToast } from '@/components/ui/use-toast';
+
+const formSchema = z.object({
+  email: z.string().email('Enter a valid email!'),
+  password: z
+    .string()
+    .min(4, 'Password must be more than 4 symbols')
+    .max(255, 'Password must be less than 255 symbols'),
+});
 
 const LoginPage: React.FC = () => {
   const navigator = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { toast } = useToast();
+  const [isError, setError] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!email) return alert('Enter your email!');
-    if (!password) return alert('Enter your password!');
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
-    const isAuth = await signIn(email, password);
-    if (!isAuth) {
-      return alert('Invalid credentials!');
-    }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const isAuth = await signIn(values.email, values.password);
+    if (!isAuth) return setError(true);
+    toast({ description: 'Success logged in!' });
     return navigator('/');
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="container">
-        <form
-          onSubmit={handleSubmit}
-          className="mx-auto max-w-md w-full px-4 py-16 md:px-8 rounded-lg bg-gray-900"
-        >
-          <h1 className="text-4xl text-center mb-2">Welcome back!</h1>
-          <p className="text-center mb-8 text-gray-500">
-            Please login in your account to continue
-          </p>
-          <div className="mb-4">
-            <Label className="mb-2" htmlFor="email">
-              Email
-            </Label>
-            <Input
-              id="email"
-              placeholder="example@mail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="mb-8">
-            <Label className="mb-2" htmlFor="password">
-              Password
-            </Label>
-            <Input
-              id="password"
-              placeholder="••••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <Button variant={'default'} className="flex mx-auto w-40">
-            Sign In <ChevronRight size={16} />
-          </Button>
-          <p className="text-sm mt-4 text-center">
-            No account yet?&nbsp;
-            <Link className="text-blue-500 hover:underline" to="/sign-up">
-              Sign Up
-            </Link>
-          </p>
-        </form>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="mx-auto max-w-md w-full px-4 py-16 md:px-8 rounded-lg bg-gray-900"
+          >
+            <h1 className="text-4xl text-center mb-2">Welcome back!</h1>
+            <p className="text-center mb-8 text-gray-500">
+              Please login in your account to continue
+            </p>
+            <div className="mb-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="example@mail.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="mb-8">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input placeholder="••••••••••" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            {isError && (
+              <Alert variant="destructive" className="-mt-4 mb-8">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Invalid credentials</AlertTitle>
+                <AlertDescription>
+                  Email or password is incorrect
+                </AlertDescription>
+              </Alert>
+            )}
+            <Button type="submit" className="flex mx-auto w-40">
+              Sign In <ChevronRight size={16} />
+            </Button>
+            <p className="text-sm mt-4 text-center">
+              No account yet?&nbsp;
+              <Link className="text-blue-500 hover:underline" to="/sign-up">
+                Sign Up
+              </Link>
+            </p>
+          </form>
+        </Form>
       </div>
     </div>
   );
