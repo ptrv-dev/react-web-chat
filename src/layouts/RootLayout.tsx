@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import Navbar from '@/components/Navbar';
-import { $axios } from '@/axios';
+import { $axios, getAuthorizationHeader } from '@/axios';
 import { Loader2 } from 'lucide-react';
 
 const RootLayout: React.FC = () => {
@@ -11,7 +11,9 @@ const RootLayout: React.FC = () => {
 
   async function checkLogin() {
     try {
-      const res = await $axios.get('/auth/me');
+      const res = await $axios.get('/auth/me', {
+        headers: { Authorization: getAuthorizationHeader() },
+      });
       console.log(res);
       setLoading(false);
     } catch {
