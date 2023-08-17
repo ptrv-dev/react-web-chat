@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
 import { ThemeProvider } from './components/ThemeProvider';
 import { HomePage, LoginPage, RegistrationPage } from './pages';
 import RootLayout from './layouts/RootLayout';
+import { store } from './store';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -30,8 +32,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
