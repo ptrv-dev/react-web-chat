@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SendHorizonal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -7,9 +7,18 @@ import Message from '@/components/Message';
 
 const HomePage: React.FC = () => {
   const [message, setMessage] = useState('');
+  const messagesRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesRef.current?.scroll({ top: 999999 });
+  }, []);
+
   return (
     <div className="h-full flex flex-col">
-      <div className="p-4 flex flex-col gap-4 items-start h-full overflow-y-auto custom-scroll">
+      <div
+        ref={messagesRef}
+        className="p-4 flex flex-col gap-4 items-start h-full overflow-y-auto custom-scroll"
+      >
         <Message username="user" message="Hello world!" time={new Date()} />
         <Message username="user" message="Hello world!" time={new Date()} />
         <Message username="user" message="Hello world!" time={new Date()} />
